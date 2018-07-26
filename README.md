@@ -2,6 +2,8 @@
 
 AWSKRUG CLI Small Group
 
+> CLI란 command-line interface의 약자로, CLI모임에서는 CLI를 활용하여 운영자동화 등의 정보를 나누는 모임입니다.
+
 ## [제1회 (18/07/31)](https://www.meetup.com/awskrug/events/252699532/)
 
 * 엄기성님: (cloudformation 없이) aws cli 이용한 빠른 lab 환경 구축 & 삭제
