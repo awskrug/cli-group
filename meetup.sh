@@ -13,6 +13,14 @@ ANSWER=
 TPUT=
 command -v tput > /dev/null || TPUT=false
 
+_echo() {
+    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
+        echo -e "$(tput setaf $2)$1$(tput sgr0)"
+    else
+        echo -e "$1"
+    fi
+}
+
 _command() {
     _echo "$ $@" 3
 }
@@ -60,11 +68,15 @@ while read VAR; do
 done < ${TMP_EVENT}
 
 if [ ! -z ${GITHUB_TOKEN} ]; then
+    DATE=$(date +%Y%m%d-%H%M%S)
+
+    echo "${DATE}" > VERSION
+
     git config --global user.name "bot"
     git config --global user.email "ops@nalbam.com"
 
     git add --all
-    git commit -m "$(date +%Y%m%d-%H%M)"
+    git commit -m "${DATE}"
 
     _command "git push github.com/${USERNAME}/${REPONAME}"
     git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
