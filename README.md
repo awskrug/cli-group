@@ -7,8 +7,6 @@ AWSKRUG CLI Small Group
 <!-- meetup count -- 2 -->
 <!-- history -->
 
-<!-- meetup awskrug -- 253843549 -->
-
 ## [제2회 AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
 
 * 유정열님
