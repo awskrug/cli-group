@@ -46,7 +46,7 @@ fi
 # readme.md
 OUTPUT=${SHELL_DIR}/README.md
 
-COUNT=$(cat ${OUTPUT} | grep '<!-- ${EVENT_ID} -->' | wc -l | xargs)
+COUNT=$(cat ${OUTPUT} | grep "\-\- ${EVENT_ID} \-\-" | wc -l | xargs)
 
 if [ "x${COUNT}" == "x0" ]; then
     echo "" >> ${OUTPUT}
