@@ -14,10 +14,6 @@ _echo() {
     echo -e "$1"
 }
 
-_command() {
-    _echo "$ $@" 3
-}
-
 _success() {
     _echo "+ $@" 2
     exit 0
@@ -30,7 +26,7 @@ _error() {
 
 ################################################################################
 
-TMP_EVENT="/tmp/events"
+TMP_EVENT="/tmp/meetup_events"
 
 curl -sL https://api.meetup.com/${MEETUP_ID}/events | \
     jq ['.[] | select(.name | contains("AWSKRUG CLI")) | {id,name,local_date}'][0] > ${TMP_EVENT}
@@ -46,13 +42,25 @@ fi
 # readme.md
 OUTPUT=${SHELL_DIR}/README.md
 
-COUNT=$(cat ${OUTPUT} | grep "\-\- ${EVENT_ID} \-\-" | wc -l | xargs)
+COUNT=$(cat ${OUTPUT} | grep "\-\- meetup ${MEETUP_ID} \-\- ${EVENT_ID} \-\-" | wc -l | xargs)
 
 if [ "x${COUNT}" == "x0" ]; then
-    echo "" >> ${OUTPUT}
-    echo "<!-- ${EVENT_ID} -->" >> ${OUTPUT}
-    echo "" >> ${OUTPUT}
-    echo "## [${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${OUTPUT}
+    # meetup count
+    IDX=$(grep "\-\- meetup count \-\-" ${OUTPUT} | cut -d' ' -f5)
+    IDX=$(( ${IDX} + 1 ))
+
+    _echo "제${IDX}회 ${EVENT_NAME}"
+
+    echo "" > ${TMP_EVENT}
+    echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${TMP_EVENT}
+    echo "" >> ${TMP_EVENT}
+    echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${TMP_EVENT}
+
+    # replace event info
+    sed -i "/\-\- history \-\-/r ${TMP_EVENT}" ${OUTPUT}
+
+    # replace meetup count
+    sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${OUTPUT}
 fi
 
 # rsvps
