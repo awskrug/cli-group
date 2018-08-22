@@ -11,8 +11,6 @@ AWSKRUG CLI Small Group
 
 ## [제2회 AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
 
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
 * 유정열님
   * kops-cui 로 Kubernetes 에서 ingress-nginx 까지
 * 변규현님
