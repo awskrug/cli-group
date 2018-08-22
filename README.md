@@ -6,7 +6,7 @@ AWSKRUG CLI Small Group
 
 <!-- history -->
 
-<!-- 253843549 -->
+<!-- 253843549 --> <!-- meetup awskrug -->
 
 ## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
 
@@ -15,7 +15,7 @@ AWSKRUG CLI Small Group
 * 변규현님
   * 노드 스크립트로 aws 인프라 올리기
 
-<!-- 252699532 -->
+<!-- 252699532 --> <!-- meetup awskrug -->
 
 ## [AWSKRUG CLI모임 (7월 31일 화요일)](https://www.meetup.com/awskrug/events/252699532/)
 
