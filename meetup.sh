@@ -86,7 +86,7 @@ while read VAR; do
 done < ${TMP_EVENT}
 
 # host
-sed -i "s/ [0-9]* | true / ${ARR[0]} | :sunglasses: /g" ${OUTPUT}
+sed -i "s/| true |/| :sunglasses: |/g" ${OUTPUT}
 
 if [ -f ${PAYLOG} ]; then
     while read VAR; do
@@ -97,7 +97,7 @@ if [ -f ${PAYLOG} ]; then
 fi
 
 # not paid yet
-sed -i "s/ [0-9]* | false / ${ARR[0]} | :ghost: /g" ${OUTPUT}
+sed -i "s/| false |/| :ghost: |/g" ${OUTPUT}
 
 # git push
 if [ ! -z ${GITHUB_TOKEN} ]; then
