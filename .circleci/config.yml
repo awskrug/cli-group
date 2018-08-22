@@ -10,9 +10,9 @@ jobs:
 
 workflows:
   version: 2
-#  apply:
-#    jobs:
-#      - build
+  apply:
+    jobs:
+      - build
   nightly:
     jobs:
       - build

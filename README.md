@@ -19,35 +19,3 @@ AWSKRUG CLI Small Group
   * kops-cui 로 Kubernetes 에서 ingress-nginx 까지
 * 변규현님
   * 노드 스크립트로 aws 인프라 올리기
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-<!-- 253843549 -->
-
-## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
