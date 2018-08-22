@@ -61,16 +61,19 @@ while read VAR; do
 done < ${TMP_EVENT}
 
 if [ ! -z ${GITHUB_TOKEN} ]; then
+    CHECK=
     DATE=$(date +%Y%m%d-%H%M)
 
     git config --global user.name "bot"
     git config --global user.email "ops@nalbam.com"
 
     git add --all
-    git commit -m "${DATE}"
+    git commit -m "${DATE}" > /dev/null 2>&1 || export CHECK=true
 
-    _command "git push github.com/${USERNAME}/${REPONAME}"
-    git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+    if [ ! -z ${CHECK} ]; then
+        _command "git push github.com/${USERNAME}/${REPONAME}"
+        git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+    fi
 fi
 
 _success "done."
