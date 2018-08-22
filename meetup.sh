@@ -70,7 +70,7 @@ if [ ! -z ${GITHUB_TOKEN} ]; then
     git add --all
     git commit -m "${DATE}" > /dev/null 2>&1 || export CHECK=true
 
-    if [ ! -z ${CHECK} ]; then
+    if [ -z ${CHECK} ]; then
         _command "git push github.com/${USERNAME}/${REPONAME}"
         git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
     fi
