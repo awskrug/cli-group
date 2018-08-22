@@ -13,8 +13,6 @@ AWSKRUG CLI Small Group
   * [적극적으로 게을러지기 위한 AWS CLI 사용법](http://bit.ly/cli-for-lazy)
   * Jenkins를 이용한 CLI자동화
 
-<!-- 253843549 -->
-
 ## [제2회 (18/09/04)](https://www.meetup.com/awskrug/events/253843549/)
 
 * 유정열님
