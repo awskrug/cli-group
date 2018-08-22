@@ -70,7 +70,7 @@ done < ${TMP_EVENT}
 if [ ! -z ${GITHUB_TOKEN} ]; then
     DATE=$(date +%Y%m%d-%H%M%S)
 
-    echo "${DATE}" > VERSION
+    #echo "${DATE}" > VERSION
 
     git config --global user.name "bot"
     git config --global user.email "ops@nalbam.com"
