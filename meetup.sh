@@ -14,6 +14,10 @@ _echo() {
     echo -e "$1"
 }
 
+_command() {
+    _echo "$ $@" 3
+}
+
 _success() {
     _echo "+ $@" 2
     exit 0
