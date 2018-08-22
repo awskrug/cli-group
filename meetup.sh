@@ -74,7 +74,7 @@ echo " ID | Paid | Name | Photo" >> ${OUTPUT}
 echo " -- | ---- | ---- | -----" >> ${OUTPUT}
 
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
-    jq '.[] | . as $h | [$h.member.id,$h.member.name,$h.member.photo.thumb_link] | " \(.[0]) | | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
+    jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
 
 while read VAR; do
     echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
@@ -83,9 +83,12 @@ done < ${TMP_EVENT}
 if [ -f ${PAYLOG} ]; then
     while read VAR; do
         ARR=(${VAR})
-        sed -i "s/ ${ARR[0]} | / ${ARR[0]} | :smile: /" ${OUTPUT}
+        sed -i "s/ ${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
     done < ${PAYLOG}
 fi
+
+sed -i "s/ [0-9]* | true / ${ARR[0]} | :sunglasses: /g" ${OUTPUT}
+sed -i "s/ [0-9]* | false / ${ARR[0]} | :ghost: /g" ${OUTPUT}
 
 if [ ! -z ${GITHUB_TOKEN} ]; then
     CHECK=
