@@ -10,15 +10,8 @@ MEETUP_ID="awskrug"
 
 ANSWER=
 
-TPUT=
-command -v tput > /dev/null || TPUT=false
-
 _echo() {
-    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
-        echo -e "$(tput setaf $2)$1$(tput sgr0)"
-    else
-        echo -e "$1"
-    fi
+    echo -e "$1"
 }
 
 _command() {
@@ -68,9 +61,7 @@ while read VAR; do
 done < ${TMP_EVENT}
 
 if [ ! -z ${GITHUB_TOKEN} ]; then
-    DATE=$(date +%Y%m%d-%H%M%S)
-
-    #echo "${DATE}" > VERSION
+    DATE=$(date +%Y%m%d-%H%M)
 
     git config --global user.name "bot"
     git config --global user.email "ops@nalbam.com"
