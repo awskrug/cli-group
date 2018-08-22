@@ -64,20 +64,28 @@ if [ "x${COUNT}" == "x0" ]; then
 fi
 
 # rsvps
+PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
 
 echo "# ${EVENT_NAME}" > ${OUTPUT}
 echo "" >> ${OUTPUT}
 
-echo "ID | Name | Photo" >> ${OUTPUT}
-echo "-- | ---- | -----" >> ${OUTPUT}
+echo " ID | Paid | Name | Photo" >> ${OUTPUT}
+echo " -- | ---- | ---- | -----" >> ${OUTPUT}
 
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
-    jq '.[] | . as $h | [$h.member.id,$h.member.name,$h.member.photo.thumb_link] | "\(.[0]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
+    jq '.[] | . as $h | [$h.member.id,$h.member.name,$h.member.photo.thumb_link] | " \(.[0]) | | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
 
 while read VAR; do
     echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
 done < ${TMP_EVENT}
+
+if [ -f ${PAYLOG} ]; then
+    while read VAR; do
+        ARR=(${VAR})
+        sed -i "s/ ${ARR[0]} | / ${ARR[0]} | :smile: /" ${OUTPUT}
+    done < ${PAYLOG}
+fi
 
 if [ ! -z ${GITHUB_TOKEN} ]; then
     CHECK=
