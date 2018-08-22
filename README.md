@@ -4,14 +4,8 @@ AWSKRUG CLI Small Group
 
 > CLI란 command-line interface의 약자로, CLI모임에서는 CLI를 활용하여 운영자동화 등의 정보를 나누는 모임입니다.
 
-<!-- meetup count -- 3 -->
+<!-- meetup count -- 1 -->
 <!-- history -->
-
-<!-- meetup awskrug -- 253843549 -->
-
-## [제3회 AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
-
-## [제2회 AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
 
 * 유정열님
   * kops-cui 로 Kubernetes 에서 ingress-nginx 까지
