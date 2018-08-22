@@ -40,11 +40,22 @@ EVENT_NAME=$(cat ${TMP_EVENT} | grep '"name"' | cut -d'"' -f4 | xargs)
 EVENT_DATE=$(cat ${TMP_EVENT} | grep '"local_date"' | cut -d'"' -f4 | xargs)
 
 if [ -z ${EVENT_ID} ]; then
-    _error "Not found event"
+    _error "Not found event."
 fi
 
-mkdir -p rsvps
+# readme.md
+OUTPUT=${SHELL_DIR}/README.md
 
+COUNT=$(cat ${OUTPUT} | grep '<!-- ${EVENT_ID} -->' | wc -l | xargs)
+
+if [ "x${COUNT}" == "x0" ]; then
+    echo "" >> ${OUTPUT}
+    echo "<!-- ${EVENT_ID} -->" >> ${OUTPUT}
+    echo "" >> ${OUTPUT}
+    echo "## [${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${OUTPUT}
+fi
+
+# rsvps
 OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
 
 echo "# ${EVENT_NAME}" > ${OUTPUT}
