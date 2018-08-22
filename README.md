@@ -39,3 +39,7 @@ AWSKRUG CLI Small Group
 <!-- 253843549 -->
 
 ## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
+
+<!-- 253843549 -->
+
+## [AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
