@@ -20,7 +20,8 @@ AWSKRUG CLI Small Group
 
 ## [제1회 AWSKRUG CLI모임 (7월 31일 화요일)](https://www.meetup.com/awskrug/events/252699532/)
 
-* 엄기성님: (cloudformation 없이) aws cli 이용한 빠른 lab 환경 구축 & 삭제
+* 엄기성님
+  * (cloudformation 없이) aws cli 이용한 빠른 lab 환경 구축 & 삭제
 * 정도현님
   * [적극적으로 게을러지기 위한 AWS CLI 사용법](http://bit.ly/cli-for-lazy)
   * Jenkins를 이용한 CLI자동화
