@@ -28,6 +28,7 @@ _error() {
 
 TMP_EVENT="/tmp/meetup_events"
 
+# meetup events
 curl -sL https://api.meetup.com/${MEETUP_ID}/events | \
     jq ['.[] | select(.name | contains("AWSKRUG CLI")) | {id,name,local_date}'][0] > ${TMP_EVENT}
 
@@ -51,6 +52,7 @@ if [ "x${COUNT}" == "x0" ]; then
 
     _echo "제${IDX}회 ${EVENT_NAME}"
 
+    # new event
     echo "" > ${TMP_EVENT}
     echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${TMP_EVENT}
     echo "" >> ${TMP_EVENT}
@@ -67,12 +69,15 @@ fi
 PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
 
+# title
 echo "# ${EVENT_NAME}" > ${OUTPUT}
 echo "" >> ${OUTPUT}
 
+# table
 echo " ID | Paid | Name | Photo" >> ${OUTPUT}
 echo " -- | ---- | ---- | -----" >> ${OUTPUT}
 
+# meetup events rsvps
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
     jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
 
@@ -80,16 +85,21 @@ while read VAR; do
     echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
 done < ${TMP_EVENT}
 
+# host
+sed -i "s/ [0-9]* | true / ${ARR[0]} | :sunglasses: /g" ${OUTPUT}
+
 if [ -f ${PAYLOG} ]; then
     while read VAR; do
         ARR=(${VAR})
+        # paid
         sed -i "s/ ${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
     done < ${PAYLOG}
 fi
 
-sed -i "s/ [0-9]* | true / ${ARR[0]} | :sunglasses: /g" ${OUTPUT}
+# not paid yet
 sed -i "s/ [0-9]* | false / ${ARR[0]} | :ghost: /g" ${OUTPUT}
 
+# git push
 if [ ! -z ${GITHUB_TOKEN} ]; then
     CHECK=
     DATE=$(date +%Y%m%d-%H%M)
