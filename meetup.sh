@@ -1,0 +1,76 @@
+#!/bin/bash
+
+SHELL_DIR=$(dirname $0)
+
+MEETUP_ID="awskrug"
+
+ANSWER=
+
+TPUT=
+command -v tput > /dev/null || TPUT=false
+
+_echo() {
+    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
+        echo -e "$(tput setaf $2)$1$(tput sgr0)"
+    else
+        echo -e "$1"
+    fi
+}
+
+_read() {
+    if [ -z ${TPUT} ]; then
+        read -p "$(tput setaf 6)$1$(tput sgr0)" ANSWER
+    else
+        read -p "$1" ANSWER
+    fi
+}
+
+_result() {
+    _echo "# $@" 4
+}
+
+_command() {
+    _echo "$ $@" 3
+}
+
+_success() {
+    _echo "+ $@" 2
+    exit 0
+}
+
+_error() {
+    _echo "- $@" 1
+    exit 1
+}
+
+################################################################################
+
+TMP_EVENT="/tmp/events"
+
+curl -sL https://api.meetup.com/${MEETUP_ID}/events | \
+    jq ['.[] | select(.name | contains("AWSKRUG CLI")) | {id,name,local_date}'][0] > ${TMP_EVENT}
+
+EVENT_ID=$(cat ${TMP_EVENT} | grep '"id"' | cut -d'"' -f4 | xargs)
+EVENT_NAME=$(cat ${TMP_EVENT} | grep '"name"' | cut -d'"' -f4 | xargs)
+EVENT_DATE=$(cat ${TMP_EVENT} | grep '"local_date"' | cut -d'"' -f4 | xargs)
+
+if [ -z ${EVENT_ID} ]; then
+    _error "Not found event"
+fi
+
+mkdir -p rsvps
+
+OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
+
+echo "# ${EVENT_NAME}" > ${OUTPUT}
+echo "" >> ${OUTPUT}
+
+echo "ID | Name | Photo" >> ${OUTPUT}
+echo "-- | ---- | -----" >> ${OUTPUT}
+
+curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
+    jq '.[] | . as $h | [$h.member.id,$h.member.name,$h.member.photo.thumb_link] | "\(.[0]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
+
+while read VAR; do
+    echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
+done < ${TMP_EVENT}
