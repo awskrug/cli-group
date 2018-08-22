@@ -2,32 +2,16 @@
 
 SHELL_DIR=$(dirname $0)
 
+USERNAME=${1:-awskrug}
+REPONAME=${2:-cli-group}
+GITHUB_TOKEN=${3}
+
 MEETUP_ID="awskrug"
 
 ANSWER=
 
 TPUT=
 command -v tput > /dev/null || TPUT=false
-
-_echo() {
-    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
-        echo -e "$(tput setaf $2)$1$(tput sgr0)"
-    else
-        echo -e "$1"
-    fi
-}
-
-_read() {
-    if [ -z ${TPUT} ]; then
-        read -p "$(tput setaf 6)$1$(tput sgr0)" ANSWER
-    else
-        read -p "$1" ANSWER
-    fi
-}
-
-_result() {
-    _echo "# $@" 4
-}
 
 _command() {
     _echo "$ $@" 3
@@ -74,3 +58,16 @@ curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
 while read VAR; do
     echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
 done < ${TMP_EVENT}
+
+if [ ! -z ${GITHUB_TOKEN} ]; then
+    git config --global user.name "bot"
+    git config --global user.email "ops@nalbam.com"
+
+    git add --all
+    git commit -m "$(date +%Y%m%d-%H%M)"
+
+    _command "git push github.com/${USERNAME}/${REPONAME}"
+    git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+fi
+
+_success "done."
