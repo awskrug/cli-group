@@ -73,14 +73,13 @@ fi
 PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
 
-# title
-echo "# ${EVENT_NAME}" > ${OUTPUT}
-echo "" >> ${OUTPUT}
-
 # meetup events rsvps
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
     jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
 
+# title
+echo "# ${EVENT_NAME}" > ${OUTPUT}
+echo "" >> ${OUTPUT}
 echo "* 신청 : $(cat ${TMP_EVENT} | wc -l)" >> ${OUTPUT}
 echo "* 지불 : $(cat ${PAYLOG} | wc -l)" >> ${OUTPUT}
 echo "" >> ${OUTPUT}
