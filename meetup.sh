@@ -93,18 +93,20 @@ while read VAR; do
 done < ${TMP_EVENT}
 
 # host
-sed -i "s/| true |/| :sunglasses: |/g" ${OUTPUT}
+sed -i "s/| true /| :sunglasses: /g" ${OUTPUT}
+sed -i "s/| false /| /g" ${OUTPUT}
 
 if [ -f ${PAYLOG} ]; then
     while read VAR; do
         ARR=(${VAR})
         # paid
-        sed -i "s/ ${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
+        # sed -i "s/ ${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
+        sed -i "s/ ${ARR[0]} | / ${ARR[0]} | :smile: /" ${OUTPUT}
     done < ${PAYLOG}
 fi
 
 # not paid yet
-sed -i "s/| false |/| :ghost: |/g" ${OUTPUT}
+# sed -i "s/| false |/| :ghost: |/g" ${OUTPUT}
 
 # git push
 if [ ! -z ${GITHUB_TOKEN} ]; then
