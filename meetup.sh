@@ -12,8 +12,14 @@ MEETUP_PREFIX="AWSKRUG CLI"
 
 ANSWER=
 
+command -v tput > /dev/null || TPUT=false
+
 _echo() {
-    echo -e "$1"
+    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
+        echo -e "$(tput setaf $2)$1$(tput sgr0)"
+    else
+        echo -e "$1"
+    fi
 }
 
 _command() {
