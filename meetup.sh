@@ -6,6 +6,8 @@ USERNAME=${1:-awskrug}
 REPONAME=${2:-cli-group}
 GITHUB_TOKEN=${3}
 
+CHANGED=
+
 MEETUP_ID="awskrug"
 
 MEETUP_PREFIX="AWSKRUG CLI"
@@ -120,16 +122,15 @@ fi
 
 # git push
 if [ ! -z ${GITHUB_TOKEN} ]; then
-    CHECK=
     DATE=$(date +%Y%m%d-%H%M)
 
     git config --global user.name "bot"
     git config --global user.email "bot@nalbam.com"
 
     git add --all
-    git commit -m "${DATE}" > /dev/null 2>&1 || export CHECK=true
+    git commit -m "${DATE}" > /dev/null 2>&1 || export CHANGED=true
 
-    if [ -z ${CHECK} ]; then
+    if [ -z ${CHANGED} ]; then
         _command "git push github.com/${USERNAME}/${REPONAME}"
         git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
     fi
