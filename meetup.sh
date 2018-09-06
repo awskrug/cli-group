@@ -8,6 +8,8 @@ GITHUB_TOKEN=${3}
 
 MEETUP_ID="awskrug"
 
+MEETUP_PREFIX="AWSKRUG CLI"
+
 ANSWER=
 
 _echo() {
@@ -25,23 +27,23 @@ _success() {
 
 _error() {
     _echo "- $@" 1
-    exit 0
+    exit 1
 }
 
 ################################################################################
 
-TMP_EVENT="/tmp/meetup_events"
+EVENTS=$(mktemp /tmp/meetup-events-XXXXXX)
 
 # meetup events
-curl -sL https://api.meetup.com/${MEETUP_ID}/events | \
-    jq ['.[] | select(.name | contains("AWSKRUG CLI")) | {id,name,local_date}'][0] > ${TMP_EVENT}
+curl -sL https://api.meetup.com/${MEETUP_ID}/events | PREFIX="${MEETUP_PREFIX}" \
+    jq ['.[] | select(.name | contains(env.PREFIX)) | {id,name,local_date}'][0] > ${EVENTS}
 
-EVENT_ID=$(cat ${TMP_EVENT} | grep '"id"' | cut -d'"' -f4 | xargs)
-EVENT_NAME=$(cat ${TMP_EVENT} | grep '"name"' | cut -d'"' -f4 | xargs)
-EVENT_DATE=$(cat ${TMP_EVENT} | grep '"local_date"' | cut -d'"' -f4 | xargs)
+EVENT_ID=$(cat ${EVENTS} | grep '"id"' | cut -d'"' -f4 | xargs)
+EVENT_NAME=$(cat ${EVENTS} | grep '"name"' | cut -d'"' -f4 | xargs)
+EVENT_DATE=$(cat ${EVENTS} | grep '"local_date"' | cut -d'"' -f4 | xargs)
 
 if [ -z ${EVENT_ID} ]; then
-    _error "Not found event."
+    _success "Not found event."
 fi
 
 # readme.md
@@ -56,14 +58,16 @@ if [ "x${COUNT}" == "x0" ]; then
 
     _echo "제${IDX}회 ${EVENT_NAME}"
 
+    EVENT=$(mktemp /tmp/meetup-new-event-XXXXXX)
+
     # new event
-    echo "" > ${TMP_EVENT}
-    echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${TMP_EVENT}
-    echo "" >> ${TMP_EVENT}
-    echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${TMP_EVENT}
+    echo "" > ${EVENT}
+    echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${EVENT}
+    echo "" >> ${EVENT}
+    echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${EVENT}
 
     # replace event info
-    sed -i "/\-\- history \-\-/r ${TMP_EVENT}" ${OUTPUT}
+    sed -i "/\-\- history \-\-/r ${EVENT}" ${OUTPUT}
 
     # replace meetup count
     sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${OUTPUT}
@@ -75,12 +79,12 @@ OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
 
 # meetup events rsvps
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
-    jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${TMP_EVENT}
+    jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${EVENTS}
 
 # title
 echo "# ${EVENT_NAME}" > ${OUTPUT}
 echo "" >> ${OUTPUT}
-echo "* 신청 : $(cat ${TMP_EVENT} | wc -l)" >> ${OUTPUT}
+echo "* 신청 : $(cat ${EVENTS} | wc -l)" >> ${OUTPUT}
 echo "* 지불 : $(cat ${PAYLOG} | wc -l)" >> ${OUTPUT}
 echo "" >> ${OUTPUT}
 
@@ -90,7 +94,7 @@ echo " -- | ---- | ---- | -----" >> ${OUTPUT}
 
 while read VAR; do
     echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
-done < ${TMP_EVENT}
+done < ${EVENTS}
 
 # host
 sed -i "s/| true /| :sunglasses: /g" ${OUTPUT}
