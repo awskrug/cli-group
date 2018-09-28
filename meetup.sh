@@ -152,19 +152,19 @@ make_balance() {
     COST=$(make_sum cost)
     LEFT=$(( ${PAID} - ${COST} ))
 
-    _result "PAID : ${PAID}"
-    _result "COST : ${COST}"
-    _result "LEFT : ${LEFT}"
+    _result "지불 : ${PAID}"
+    _result "지출 : ${COST}"
+    _result "잔액 : ${LEFT}"
 
     echo "" >> ${OUTPUT}
-    echo "## total" >> ${OUTPUT}
+    echo "## summary" >> ${OUTPUT}
     echo "" >> ${OUTPUT}
 
     echo " Type | Amount" >> ${OUTPUT}
     echo " ---- | ------" >> ${OUTPUT}
-    echo " PAID | ${PAID}" >> ${OUTPUT}
-    echo " COST | ${COST}" >> ${OUTPUT}
-    echo " LEFT | ${LEFT}" >> ${OUTPUT}
+    echo " 지불 | ${PAID}" >> ${OUTPUT}
+    echo " 지출 | ${COST}" >> ${OUTPUT}
+    echo " 잔액 | ${LEFT}" >> ${OUTPUT}
 }
 
 make_sum() {
@@ -190,7 +190,7 @@ make_sum() {
 
         TOTAL=$(( ${TOTAL} + ${SUM} ))
 
-        echo " ${VAR} | ${SUM}" >> ${OUTPUT}
+        echo " $(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${OUTPUT}
     done < ${LIST}
 
     echo ${TOTAL}
