@@ -14,7 +14,7 @@ AWSKRUG CLI Small Group
 * 유정열님
   * [kops-cui 로 Kubernetes 에서 ingress-nginx 까지](https://docs.google.com/presentation/d/1EiLKCuKPJntrK0NZqcEIA35IvmtQ5Dz6nakdpbIrIqA)
 * 변규현님
-  * 노드 스크립트로 aws 인프라 올리기
+  * [노드 스크립트로 aws 인프라 올리기](https://github.com/novemberde/awscli-node-demo)
 
 <!-- meetup awskrug -- 252699532 -->
 
