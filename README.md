@@ -11,6 +11,9 @@ AWSKRUG CLI Small Group
 
 ## [제3회 AWSKRUG CLI모임 (10월 16일 화요일)](https://www.meetup.com/awskrug/events/255081286/)
 
+* 강정희님
+  * AWS Amplify를 사용한 하이브리드 모바일 어플리케이션 개발하기
+
 <!-- meetup awskrug -- 253843549 -->
 
 ## [제2회 AWSKRUG CLI모임 (9월 4일 화요일)](https://www.meetup.com/awskrug/events/253843549/)
