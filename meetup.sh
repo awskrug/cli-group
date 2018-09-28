@@ -5,6 +5,7 @@ SHELL_DIR=$(dirname $0)
 USERNAME=${1:-awskrug}
 REPONAME=${2:-cli-group}
 GITHUB_TOKEN=${3}
+SLACK_TOKEN=${4}
 
 CHANGED=
 
@@ -84,6 +85,8 @@ fi
 # rsvps
 PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
+
+touch ${PAYLOG}
 
 # meetup events rsvps
 curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
