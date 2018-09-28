@@ -6,7 +6,7 @@ jobs:
       - checkout
       - run:
           name: Meetup
-          command: ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN
+          command: ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN $SLACK_TOKEN
 
 workflows:
   version: 2
