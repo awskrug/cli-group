@@ -17,15 +17,15 @@ jobs:
 
 workflows:
   version: 2
-  apply:
-    jobs:
-      - build
+  # apply:
+  #   jobs:
+  #     - build
   nightly:
     jobs:
       - build
     triggers:
       - schedule:
-          cron: "0 0 * * *"
+          cron: "0 * * * *"
           filters:
             branches:
               only:
