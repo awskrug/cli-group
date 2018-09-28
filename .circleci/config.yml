@@ -6,7 +6,14 @@ jobs:
       - checkout
       - run:
           name: Meetup
-          command: ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN $SLACK_TOKEN
+          command: |
+            ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN
+      - run:
+          name: Slack
+          command: |
+            ./slack.sh --token="${SLACK_TOKEN}" \
+                --color="good" --title="${CIRCLE_PROJECT_REPONAME} updated" \
+                --emoji=":construction_worker:" "\`$(cat ./target/MESSAGE | xargs)\`"
 
 workflows:
   version: 2
