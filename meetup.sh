@@ -116,7 +116,7 @@ make_rsvps() {
     for i in {1..5}; do
         sed -i -E 's/(.*) \|\| (.*)[\/|@|,](.*) /\1 \|\| \2 /' ${RSVPS}
     done
-    sed -i 's/||/|/' ${RSVPS}
+    sed -i 's/ || / | /' ${RSVPS}
 
     # output
     OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
@@ -140,23 +140,23 @@ make_rsvps() {
     echo "" >> ${OUTPUT}
 
     # table
-    echo " ID | Paid | Name | Photo | Answer" >> ${OUTPUT}
-    echo " -- | ---- | ---- | ----- | ------" >> ${OUTPUT}
+    echo "ID | Paid | Name | Photo | Answer" >> ${OUTPUT}
+    echo "-- | ---- | ---- | ----- | ------" >> ${OUTPUT}
 
     while read VAR; do
         echo "${VAR}" | cut -d'"' -f2 | xargs >> ${OUTPUT}
     done < ${RSVPS}
 
     # host
-    sed -i "s/| true /| :sunglasses: /g" ${OUTPUT}
-    sed -i "s/| false /| /g" ${OUTPUT}
+    sed -i "s/| true /| :sunglasses: /" ${OUTPUT}
+    sed -i "s/| false /| /" ${OUTPUT}
 
+    # paid
     if [ -f ${PAYLOG} ]; then
         while read VAR; do
             ARR=(${VAR})
-            # paid
-            # sed -i "s/ ${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
-            sed -i "s/ ${ARR[0]} | / ${ARR[0]} | :smile: /" ${OUTPUT}
+            # sed -i "s/${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
+            sed -i "s/${ARR[0]} | /${ARR[0]} | :smile: /" ${OUTPUT}
         done < ${PAYLOG}
     fi
 
@@ -181,11 +181,11 @@ make_balance() {
     echo "## summary" >> ${OUTPUT}
     echo "" >> ${OUTPUT}
 
-    echo " Type | Amount" >> ${OUTPUT}
-    echo " ---- | ------" >> ${OUTPUT}
-    echo " 지불 | ${PAID}" >> ${OUTPUT}
-    echo " 지출 | ${COST}" >> ${OUTPUT}
-    echo " 잔액 | ${LEFT}" >> ${OUTPUT}
+    echo "Type | Amount" >> ${OUTPUT}
+    echo "---- | ------" >> ${OUTPUT}
+    echo "지불 | ${PAID}" >> ${OUTPUT}
+    echo "지출 | ${COST}" >> ${OUTPUT}
+    echo "잔액 | ${LEFT}" >> ${OUTPUT}
 }
 
 make_sum() {
@@ -202,8 +202,8 @@ make_sum() {
     echo "## ${NAME}" >> ${OUTPUT}
     echo "" >> ${OUTPUT}
 
-    echo " Date | Amount" >> ${OUTPUT}
-    echo " ---- | ------" >> ${OUTPUT}
+    echo "Date | Amount" >> ${OUTPUT}
+    echo "---- | ------" >> ${OUTPUT}
 
     while read VAR; do
         cat ${SHELL_DIR}/${NAME}/${VAR} | awk '{print $3}' > ${TEMP}
@@ -211,7 +211,7 @@ make_sum() {
 
         TOTAL=$(( ${TOTAL} + ${SUM} ))
 
-        echo " $(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${OUTPUT}
+        echo "$(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${OUTPUT}
     done < ${LIST}
 
     echo ${TOTAL}
