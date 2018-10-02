@@ -102,6 +102,45 @@ make_readme() {
     fi
 }
 
+make_paid() {
+    if [ -z ${SMS_API_URL} ]; then
+        return
+    fi
+
+    PAID=$(mktemp /tmp/meetup-paid-XXXXXX)
+
+    # 카카오뱅크
+    PHONE="15993333"
+
+    # get sms paid
+    curl -sL -X GET -G ${SMS_API_URL} -d phone_number=${PHONE} -d checked=false \
+        | jq '.[] | "\(.id) \(.rows[0]) \(.rows[1]) \(.rows[2]) \(.rows[3]) \(.rows[4]) \(.rows[5])"' \
+        > ${PAID}
+
+    SMS_CNT=$(cat ${PAID} | wc -l)
+
+    _result "문자 : ${SMS_CNT}"
+
+    # output
+    PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
+
+    while read VAR; do
+        ARR=($(echo $VAR | cut -d'"' -f2))
+
+        SMS_ID="${ARR[0]}"
+
+        if [ "${ARR[6]}" == "입금" ] && [ "${ARR[7]}" == "5,000원" ]; then
+            _result "${ARR[0]} - ${ARR[2]} - ${ARR[4]} ${ARR[5]} - ${ARR[6]} - ${ARR[7]} - ${ARR[8]}"
+
+            echo "0 | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]}" >> ${PAYLOG}
+        fi
+
+        # put checked=true
+        JSON="{\"checked\":true,\"phone_number\":\"${PHONE}\"}"
+        curl -H 'Content-Type: application/json' -X PUT ${SMS_API_URL}/${SMS_ID} -d "${JSON}"
+    done < ${PAID}
+}
+
 make_rsvps() {
     RSVPS=$(mktemp /tmp/meetup-rsvps-XXXXXX)
 
@@ -110,7 +149,7 @@ make_rsvps() {
         -d sign=true \
         -d key=${MEETUP_TOKEN} \
         -d fields=answers \
-        | jq '.[] | {member,answers} | [.member.id,.member.name,.member.photo.thumb_link,.member.event_context.host,.answers[0].answer] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2])) || \(.[4]) "' \
+        | jq '.[] | " \(.member.id) | \(.member.event_context.host) | \(.member.name) | ![\(.member.name)](\(.member.photo.thumb_link)) || \(.answers[0].answer) "' \
         > ${RSVPS}
 
     # answers
@@ -156,8 +195,11 @@ make_rsvps() {
     if [ -f ${PAYLOG} ]; then
         while read VAR; do
             ARR=(${VAR})
-            # sed -i "s/${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
-            sed -i "s/${ARR[0]} | /${ARR[0]} | :smile: /" ${OUTPUT}
+
+            if [ "x${ARR[0]}" != "x0" ]; then
+                # sed -i "s/${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
+                sed -i "s/${ARR[0]} | /${ARR[0]} | :smile: /" ${OUTPUT}
+            fi
         done < ${PAYLOG}
     fi
 
@@ -243,6 +285,9 @@ check_events
 # readme
 make_readme
 
+# paid
+make_paid
+
 # rsvps
 make_rsvps
 
@@ -251,8 +296,6 @@ make_balance
 
 # git push
 git_push
-
-_result "SMS_API_URL: ${SMS_API_URL}"
 
 # done
 _success "done."
