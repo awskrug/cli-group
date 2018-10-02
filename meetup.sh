@@ -7,6 +7,7 @@ SHELL_DIR=$(dirname $0)
 USERNAME=${1:-awskrug}
 REPONAME=${2:-cli-group}
 GITHUB_TOKEN=${3}
+MEETUP_TOKEN=${4}
 
 CHANGED=
 ANSWER=
@@ -69,6 +70,7 @@ check_events() {
     fi
 
     _result "${EVENT_NAME}"
+    _result "${EVENT_ID}"
 }
 
 make_readme() {
@@ -103,9 +105,20 @@ make_rsvps() {
     RSVPS=$(mktemp /tmp/meetup-rsvps-XXXXXX)
 
     # meetup events rsvps
-    curl -sL https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps | \
-        jq '.[] | .member as $m | [$m.id,$m.name,$m.photo.thumb_link,$m.event_context.host] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2]))"' > ${RSVPS}
+    curl -sL -X GET -G https://api.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/rsvps \
+        -d sign=true \
+        -d key=${MEETUP_TOKEN} \
+        -d fields=answers \
+        | jq '.[] | {member,answers} | [.member.id,.member.name,.member.photo.thumb_link,.member.event_context.host,.answers[0].answer] | " \(.[0]) | \(.[3]) | \(.[1]) | ![\(.[1])](\(.[2])) || \(.[4]) "' \
+        > ${RSVPS}
 
+    # answers
+    for i in {1..5}; do
+        sed -i -E 's/(.*) \|\| (.*)[\/|@|,](.*) /\1 \|\| \2 /' ${RSVPS}
+    done
+    sed -i 's/||/|/' ${RSVPS}
+
+    # output
     OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
     PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 
@@ -127,11 +140,11 @@ make_rsvps() {
     echo "" >> ${OUTPUT}
 
     # table
-    echo " ID | Paid | Name | Photo" >> ${OUTPUT}
-    echo " -- | ---- | ---- | -----" >> ${OUTPUT}
+    echo " ID | Paid | Name | Photo | Answer" >> ${OUTPUT}
+    echo " -- | ---- | ---- | ----- | ------" >> ${OUTPUT}
 
     while read VAR; do
-        echo "${VAR}" | cut -d'"' -f2 >> ${OUTPUT}
+        echo "${VAR}" | cut -d'"' -f2 | xargs >> ${OUTPUT}
     done < ${RSVPS}
 
     # host
