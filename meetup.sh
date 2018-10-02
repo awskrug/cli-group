@@ -114,10 +114,10 @@ make_paid() {
 
     # get sms paid
     curl -sL -X GET -G ${SMS_API_URL} -d phone_number=${PHONE} -d checked=false \
-        | jq '.[] | "\(.id) \(.rows[0]) \(.rows[1]) \(.rows[2]) \(.rows[3]) \(.rows[4]) \(.rows[5])"' \
+        | jq '.[] | "\(.id) \(.message)"' | sed -e 's/\\n/ /g' \
         > ${PAID}
 
-    SMS_CNT=$(cat ${PAID} | wc -l)
+    SMS_CNT=$(cat ${PAID} | wc -l | xargs)
 
     _result "문자 : ${SMS_CNT}"
 
@@ -171,8 +171,8 @@ make_rsvps() {
 
     touch ${PAYLOG}
 
-    RSV_CNT=$(cat ${RSVPS} | wc -l)
-    PAY_CNT=$(cat ${PAYLOG} | wc -l)
+    RSV_CNT=$(cat ${RSVPS} | wc -l | xargs)
+    PAY_CNT=$(cat ${PAYLOG} | wc -l | xargs)
 
     _result "신청 : ${RSV_CNT}"
     _result "지불 : ${PAY_CNT}"
