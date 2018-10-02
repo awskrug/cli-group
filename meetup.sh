@@ -6,8 +6,9 @@ SHELL_DIR=$(dirname $0)
 
 USERNAME=${1:-awskrug}
 REPONAME=${2:-cli-group}
-GITHUB_TOKEN=${3}
-MEETUP_TOKEN=${4}
+GITHUB_TOKEN=${3:-$GITHUB_TOKEN}
+MEETUP_TOKEN=${4:-$MEETUP_TOKEN}
+SMS_API_URL=${5:-$SMS_API_URL}
 
 CHANGED=
 ANSWER=
@@ -250,6 +251,8 @@ make_balance
 
 # git push
 git_push
+
+_result "SMS_API_URL: ${SMS_API_URL}"
 
 # done
 _success "done."
