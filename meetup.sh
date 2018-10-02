@@ -75,13 +75,13 @@ check_events() {
 }
 
 make_readme() {
-    OUTPUT=${SHELL_DIR}/README.md
+    README=${SHELL_DIR}/README.md
 
-    COUNT=$(cat ${OUTPUT} | grep "\-\- meetup ${MEETUP_ID} \-\- ${EVENT_ID} \-\-" | wc -l | xargs)
+    COUNT=$(cat ${README} | grep "\-\- meetup ${MEETUP_ID} \-\- ${EVENT_ID} \-\-" | wc -l | xargs)
 
     if [ "x${COUNT}" == "x0" ]; then
         # meetup count
-        IDX=$(grep "\-\- meetup count \-\-" ${OUTPUT} | cut -d' ' -f5)
+        IDX=$(grep "\-\- meetup count \-\-" ${README} | cut -d' ' -f5)
         IDX=$(( ${IDX} + 1 ))
 
         _echo "제${IDX}회 ${EVENT_NAME}"
@@ -95,10 +95,10 @@ make_readme() {
         echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${EVENT}
 
         # replace event info
-        sed -i "/\-\- history \-\-/r ${EVENT}" ${OUTPUT}
+        sed -i "/\-\- history \-\-/r ${EVENT}" ${README}
 
         # replace meetup count
-        sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${OUTPUT}
+        sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${README}
     fi
 }
 
@@ -122,6 +122,7 @@ make_paid() {
     _result "문자 : ${SMS_CNT}"
 
     # output
+    RSVLOG=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
     PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 
     while read VAR; do
@@ -129,10 +130,16 @@ make_paid() {
 
         SMS_ID="${ARR[0]}"
 
+        # add paid
         if [ "${ARR[6]}" == "입금" ] && [ "${ARR[7]}" == "5,000원" ]; then
-            _result "${ARR[0]} - ${ARR[2]} - ${ARR[4]} ${ARR[5]} - ${ARR[6]} - ${ARR[7]} - ${ARR[8]}"
+            _result "${ARR[0]} - ${ARR[4]} ${ARR[5]} - ${ARR[8]}"
 
-            echo "0 | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]}" >> ${PAYLOG}
+            MEM_ID="$(cat ${RSVLOG} | grep ${ARR[8]} | cut -d' ' -f1 | xargs)"
+            if [ "${MEM_ID}" == "" ]; then
+                MEM_ID="0"
+            fi
+
+            echo "${MEM_ID} | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]}" >> ${PAYLOG}
         fi
 
         # put checked=true
@@ -159,7 +166,7 @@ make_rsvps() {
     sed -i 's/ || / | /' ${RSVPS}
 
     # output
-    OUTPUT=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
+    RSVLOG=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
     PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 
     touch ${PAYLOG}
@@ -170,26 +177,27 @@ make_rsvps() {
     _result "신청 : ${RSV_CNT}"
     _result "지불 : ${PAY_CNT}"
 
+    # for slack
     printf "${PAY_CNT} / ${RSV_CNT}" > ${SHELL_DIR}/target/MESSAGE
 
     # title
-    echo "# ${EVENT_NAME}" > ${OUTPUT}
-    echo "" >> ${OUTPUT}
-    echo "* 신청 : ${RSV_CNT}" >> ${OUTPUT}
-    echo "* 지불 : ${PAY_CNT}" >> ${OUTPUT}
-    echo "" >> ${OUTPUT}
+    echo "# ${EVENT_NAME}" > ${RSVLOG}
+    echo "" >> ${RSVLOG}
+    echo "* 신청 : ${RSV_CNT}" >> ${RSVLOG}
+    echo "* 지불 : ${PAY_CNT}" >> ${RSVLOG}
+    echo "" >> ${RSVLOG}
 
     # table
-    echo "ID | Paid | Name | Photo | Answer" >> ${OUTPUT}
-    echo "-- | ---- | ---- | ----- | ------" >> ${OUTPUT}
+    echo "ID | Paid | Name | Photo | Answer" >> ${RSVLOG}
+    echo "-- | ---- | ---- | ----- | ------" >> ${RSVLOG}
 
     while read VAR; do
-        echo "${VAR}" | cut -d'"' -f2 | xargs >> ${OUTPUT}
+        echo "${VAR}" | cut -d'"' -f2 | xargs >> ${RSVLOG}
     done < ${RSVPS}
 
     # host
-    sed -i "s/| true /| :sunglasses: /" ${OUTPUT}
-    sed -i "s/| false /| /" ${OUTPUT}
+    sed -i "s/| true /| :sunglasses: /" ${RSVLOG}
+    sed -i "s/| false /| /" ${RSVLOG}
 
     # paid
     if [ -f ${PAYLOG} ]; then
@@ -197,20 +205,20 @@ make_rsvps() {
             ARR=(${VAR})
 
             if [ "x${ARR[0]}" != "x0" ]; then
-                # sed -i "s/${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${OUTPUT}
-                sed -i "s/${ARR[0]} | /${ARR[0]} | :smile: /" ${OUTPUT}
+                # sed -i "s/${ARR[0]} | [a-z]* / ${ARR[0]} | :smile: /" ${RSVLOG}
+                sed -i "s/${ARR[0]} | /${ARR[0]} | :smile: /" ${RSVLOG}
             fi
         done < ${PAYLOG}
     fi
 
     # not paid yet
-    # sed -i "s/| false |/| :ghost: |/g" ${OUTPUT}
+    # sed -i "s/| false |/| :ghost: |/g" ${RSVLOG}
 }
 
 make_balance() {
-    OUTPUT=${SHELL_DIR}/balance/balance.md
+    BALANCE=${SHELL_DIR}/balance/balance.md
 
-    echo "# balance" > ${OUTPUT}
+    echo "# balance" > ${BALANCE}
 
     PAID=$(make_sum paid)
     COST=$(make_sum cost)
@@ -220,15 +228,15 @@ make_balance() {
     _result "지출 : ${COST}"
     _result "잔액 : ${LEFT}"
 
-    echo "" >> ${OUTPUT}
-    echo "## summary" >> ${OUTPUT}
-    echo "" >> ${OUTPUT}
+    echo "" >> ${BALANCE}
+    echo "## summary" >> ${BALANCE}
+    echo "" >> ${BALANCE}
 
-    echo "Type | Amount" >> ${OUTPUT}
-    echo "---- | ------" >> ${OUTPUT}
-    echo "지불 | ${PAID}" >> ${OUTPUT}
-    echo "지출 | ${COST}" >> ${OUTPUT}
-    echo "잔액 | ${LEFT}" >> ${OUTPUT}
+    echo "Type | Amount" >> ${BALANCE}
+    echo "---- | ------" >> ${BALANCE}
+    echo "지불 | ${PAID}" >> ${BALANCE}
+    echo "지출 | ${COST}" >> ${BALANCE}
+    echo "잔액 | ${LEFT}" >> ${BALANCE}
 }
 
 make_sum() {
@@ -241,12 +249,12 @@ make_sum() {
 
     ls ${SHELL_DIR}/${NAME}/ | sort > ${LIST}
 
-    echo "" >> ${OUTPUT}
-    echo "## ${NAME}" >> ${OUTPUT}
-    echo "" >> ${OUTPUT}
+    echo "" >> ${BALANCE}
+    echo "## ${NAME}" >> ${BALANCE}
+    echo "" >> ${BALANCE}
 
-    echo "Date | Amount" >> ${OUTPUT}
-    echo "---- | ------" >> ${OUTPUT}
+    echo "Date | Amount" >> ${BALANCE}
+    echo "---- | ------" >> ${BALANCE}
 
     while read VAR; do
         cat ${SHELL_DIR}/${NAME}/${VAR} | awk '{print $3}' > ${TEMP}
@@ -254,7 +262,7 @@ make_sum() {
 
         TOTAL=$(( ${TOTAL} + ${SUM} ))
 
-        echo "$(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${OUTPUT}
+        echo "$(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${BALANCE}
     done < ${LIST}
 
     echo ${TOTAL}
