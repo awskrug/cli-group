@@ -139,7 +139,7 @@ make_paid() {
                 MEM_ID="0"
             fi
 
-            echo "${MEM_ID} | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]}" >> ${PAYLOG}
+            echo "${MEM_ID} | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]} | ${SMS_ID}" >> ${PAYLOG}
         fi
 
         # put checked=true
