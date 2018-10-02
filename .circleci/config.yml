@@ -7,7 +7,7 @@ jobs:
       - run:
           name: Meetup
           command: |
-            ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN
+            ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN $MEETUP_TOKEN
       - run:
           name: Slack
           command: |
