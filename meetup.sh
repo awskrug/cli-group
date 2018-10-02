@@ -134,7 +134,7 @@ make_paid() {
         if [ "${ARR[6]}" == "입금" ] && [ "${ARR[7]}" == "5,000원" ]; then
             _result "${ARR[0]} - ${ARR[4]} ${ARR[5]} - ${ARR[8]}"
 
-            MEM_ID="$(cat ${RSVLOG} | grep ${ARR[8]} | cut -d' ' -f1 | xargs)"
+            MEM_ID="$(cat ${RSVLOG} | grep ${ARR[8]} | cut -d' ' -f1 | head -1 | xargs)"
             if [ "${MEM_ID}" == "" ]; then
                 MEM_ID="0"
             fi
