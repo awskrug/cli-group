@@ -1,46 +1,22 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: opspresso/builder
-    working_directory: /tmp/works
+    machine: true
     steps:
       - checkout
       - run:
           name: Meetup
           command: |
             ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $GITHUB_TOKEN $MEETUP_TOKEN
-      - persist_to_workspace:
-          root: /tmp/works
-          paths:
-            - target/*
-  release:
-    docker:
-      - image: circleci/golang
-    steps:
-      - attach_workspace:
-          at: works
-      - run:
-          name: Release
-          command: |
-            VERSION="latest"
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} works/target/
 
 workflows:
   version: 2
   apply:
     jobs:
       - build
-      - release:
-          requires:
-            - build
   nightly:
     jobs:
       - build
-      - release:
-          requires:
-            - build
     triggers:
       - schedule:
           cron: "0 * * * *"
