@@ -21,6 +21,7 @@ EVENT_ID=
 EVENT_NAME=
 EVENT_DATE=
 
+rm -rf target
 mkdir -p ${SHELL_DIR}/target
 
 ################################################################################
@@ -178,7 +179,7 @@ make_rsvps() {
     _result "지불 : ${PAY_CNT}"
 
     # for slack
-    printf "${PAY_CNT} / ${RSV_CNT}" > ${SHELL_DIR}/target/MESSAGE
+    printf "${PAY_CNT} / ${RSV_CNT}" > ${SHELL_DIR}/target/VERSION
 
     # title
     echo "# ${EVENT_NAME}" > ${RSVLOG}
