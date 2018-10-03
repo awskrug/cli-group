@@ -11,7 +11,7 @@ jobs:
       - run:
           name: Slack
           command: |
-            ./slack.sh --token="${SLACK_TOKEN}" \
+            ./slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
                 --color="good" --title="${CIRCLE_PROJECT_REPONAME} updated" \
                 --emoji=":construction_worker:" "\`$(cat ./target/MESSAGE | xargs)\`"
 
