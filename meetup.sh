@@ -6,9 +6,6 @@ SHELL_DIR=$(dirname $0)
 
 USERNAME=${1:-awskrug}
 REPONAME=${2:-cli-group}
-GITHUB_TOKEN=${3:-$GITHUB_TOKEN}
-MEETUP_TOKEN=${4:-$MEETUP_TOKEN}
-SMS_API_URL=${5:-$SMS_API_URL}
 
 CHANGED=
 ANSWER=
@@ -282,6 +279,13 @@ git_push() {
         if [ -z ${CHANGED} ]; then
             _command "git push github.com/${USERNAME}/${REPONAME}"
             git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+
+            if [ ! -z ${SLACK_TOKEN} ]; then
+                VERSION="$(cat ${SHELL_DIR}/target/VERSION | xargs)"
+                ${SHELL_DIR}/slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
+                    --emoji=":construction_worker:" --username="awskrug" \
+                    --title="meetup updated" "\`${VERSION}\`"
+            fi
         fi
     fi
 }
