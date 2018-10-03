@@ -13,7 +13,7 @@ jobs:
           command: |
             ./slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
                 --emoji=":construction_worker:" --username="awskrug" \
-                --title="${CIRCLE_PROJECT_REPONAME} updated" "\`$(cat ./target/MESSAGE | xargs)\`"
+                --title="meetup updated" "\`$(cat ./target/MESSAGE | xargs)\`"
 
 workflows:
   version: 2
