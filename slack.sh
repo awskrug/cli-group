@@ -20,6 +20,7 @@ cat <<EOF
 
  Attachments Arguments:
    color            Like traffic signals. [good, warning, danger, or hex code (eg. #439FE0)].
+   author           Small text used to display the author's name..
    title            The title is displayed as larger, bold text near the top of a message attachment.
    image            A valid URL to an image file that will be displayed inside a message attachment.
    footer           Add some brief text to help contextualize and identify an attachment.
@@ -58,16 +59,40 @@ for v in "$@"; do
         color="${v#*=}"
         shift
         ;;
+    --author=*|--author_name=*)
+        author_name="${v#*=}"
+        shift
+        ;;
+    --author_link=*)
+        author_link="${v#*=}"
+        shift
+        ;;
+    --author_icon=*)
+        author_icon="${v#*=}"
+        shift
+        ;;
     --title=*)
         title="${v#*=}"
+        shift
+        ;;
+    --title_link=*)
+        title_link="${v#*=}"
         shift
         ;;
     --image=*|--image_url=*)
         image_url="${v#*=}"
         shift
         ;;
+    --thumb=*|--thumb_url=*)
+        thumb_url="${v#*=}"
+        shift
+        ;;
     --footer=*)
         footer="${v#*=}"
+        shift
+        ;;
+    --footer_icon=*)
+        footer_icon="${v#*=}"
         shift
         ;;
     *)
@@ -104,14 +129,32 @@ json="{"
         if [ "${color}" != "" ]; then
             json="$json\"color\":\"${color}\","
         fi
+        if [ "${author_name}" != "" ]; then
+            json="$json\"author_name\":\"${author_name}\","
+        fi
+        if [ "${author_link}" != "" ]; then
+            json="$json\"author_link\":\"${author_link}\","
+        fi
+        if [ "${author_icon}" != "" ]; then
+            json="$json\"author_icon\":\"${author_icon}\","
+        fi
         if [ "${title}" != "" ]; then
             json="$json\"title\":\"${title}\","
+        fi
+        if [ "${title_link}" != "" ]; then
+            json="$json\"title_link\":\"${title_link}\","
         fi
         if [ "${image_url}" != "" ]; then
             json="$json\"image_url\":\"${image_url}\","
         fi
+        if [ "${thumb_url}" != "" ]; then
+            json="$json\"thumb_url\":\"${thumb_url}\","
+        fi
         if [ "${footer}" != "" ]; then
             json="$json\"footer\":\"${footer}\","
+        fi
+        if [ "${footer_icon}" != "" ]; then
+            json="$json\"footer_icon\":\"${footer_icon}\","
         fi
         json="$json\"text\":\"${message}\""
     json="$json}]"
