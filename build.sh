@@ -189,7 +189,9 @@ check_paid() {
         fi
 
         # TODO replace RSVLOG
-        sed "${NUM}s/.*/replacement-line/" ${PAYLOG}
+        REPLACED="${MEM_ID} | ${VAR:2}"
+
+        sed "${NUM}s/.*/${REPLACED}/" ${PAYLOG}
     done < ${PAYLOG}
 }
 
