@@ -181,7 +181,7 @@ check_paid() {
 
         _result "${MEM_ID} - ${VAR}"
 
-        NUM=$(cat ${RSVLOG} | grep -n "| ${SMS_ID}" | cut -d':' -f1)
+        NUM=$(cat ${PAYLOG} | grep -n "| ${SMS_ID}" | cut -d':' -f1)
         _result "${MEM_ID} - ${NUM}"
 
         if [ "${NUM}" == "" ]; then
@@ -189,7 +189,7 @@ check_paid() {
         fi
 
         # TODO replace RSVLOG
-        sed "${NUM}s/.*/replacement-line/" ${RSVLOG}
+        sed "${NUM}s/.*/replacement-line/" ${PAYLOG}
     done < ${PAYLOG}
 }
 
