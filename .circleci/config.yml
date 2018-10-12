@@ -5,9 +5,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Meetup
+          name: Build
           command: |
-            ./meetup.sh $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME
+            chmod 755 ./build.sh
+            ./build.sh
 
 workflows:
   version: 2
