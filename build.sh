@@ -18,7 +18,9 @@ EVENT_ID=
 EVENT_NAME=
 EVENT_DATE=
 
-rm -rf target
+GIT_USERNAME="bot"
+GIT_USEREMAIL="bot@nalbam.com"
+
 mkdir -p ${SHELL_DIR}/target
 
 ################################################################################
@@ -77,27 +79,29 @@ make_readme() {
 
     COUNT=$(cat ${README} | grep "\-\- meetup ${MEETUP_ID} \-\- ${EVENT_ID} \-\-" | wc -l | xargs)
 
-    if [ "x${COUNT}" == "x0" ]; then
-        # meetup count
-        IDX=$(grep "\-\- meetup count \-\-" ${README} | cut -d' ' -f5)
-        IDX=$(( ${IDX} + 1 ))
-
-        _echo "제${IDX}회 ${EVENT_NAME}"
-
-        EVENT=$(mktemp /tmp/meetup-new-event-XXXXXX)
-
-        # new event
-        echo "" > ${EVENT}
-        echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${EVENT}
-        echo "" >> ${EVENT}
-        echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${EVENT}
-
-        # replace event info
-        sed -i "/\-\- history \-\-/r ${EVENT}" ${README}
-
-        # replace meetup count
-        sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${README}
+    if [ "x${COUNT}" != "x0" ]; then
+        return
     fi
+
+    # meetup count
+    IDX=$(grep "\-\- meetup count \-\-" ${README} | cut -d' ' -f5)
+    IDX=$(( ${IDX} + 1 ))
+
+    _echo "제${IDX}회 ${EVENT_NAME}"
+
+    EVENT=$(mktemp /tmp/meetup-new-event-XXXXXX)
+
+    # new event
+    echo "" > ${EVENT}
+    echo "<!-- meetup ${MEETUP_ID} -- ${EVENT_ID} -->" >> ${EVENT}
+    echo "" >> ${EVENT}
+    echo "## [제${IDX}회 ${EVENT_NAME}](https://www.meetup.com/${MEETUP_ID}/events/${EVENT_ID}/)" >> ${EVENT}
+
+    # replace event info
+    sed -i "/\-\- history \-\-/r ${EVENT}" ${README}
+
+    # replace meetup count
+    sed -i "s/\-\- meetup count \-\- [0-9]* \-\-/-- meetup count -- ${IDX} --/" ${README}
 }
 
 make_paid() {
@@ -133,6 +137,7 @@ make_paid() {
             _result "${ARR[0]} - ${ARR[4]} ${ARR[5]} - ${ARR[8]}"
 
             MEM_ID="$(cat ${RSVLOG} | grep ${ARR[8]} | head -1 | cut -d' ' -f1 | xargs)"
+
             if [ "${MEM_ID}" == "" ]; then
                 MEM_ID="0"
             else
@@ -146,19 +151,43 @@ make_paid() {
         JSON="{\"checked\":true,\"phone_number\":\"${PHONE}\"}"
         curl -H 'Content-Type: application/json' -X PUT ${SMS_API_URL}/${SMS_ID} -d "${JSON}"
     done < ${PAID}
+}
+
+check_paid() {
+    # output
+    RSVLOG=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
+    PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
 
     while read VAR; do
         MEM_ID="$(echo ${VAR} | cut -d'|' -f1 | xargs)"
-
-        if [ "x${MEM_ID}" == "x0" ]; then
-            MEM_NM="$(echo ${VAR} | cut -d'|' -f4 | xargs)"
-            MEM_ID="$(cat ${RSVLOG} | grep ${MEM_NM} | head -1 | cut -d' ' -f1 | xargs)"
-
-            if [ "${MEM_ID}" != "" ]; then
-                # TODO replace
-                _result "${MEM_ID} - ${VAR}"
-            fi
+        if [ "x${MEM_ID}" != "x0" ]; then
+            continue
         fi
+
+        MEM_NM="$(echo ${VAR} | cut -d'|' -f4 | xargs)"
+        if [ "${MEM_NM}" == "" ]; then
+            continue
+        fi
+
+        MEM_ID="$(cat ${RSVLOG} | grep ${MEM_NM} | head -1 | cut -d' ' -f1 | xargs)"
+        if [ "${MEM_ID}" == "" ]; then
+            continue
+        fi
+
+        SMS_ID="$(echo ${VAR} | cut -d'|' -f5 | xargs)"
+        if [ "${SMS_ID}" == "" ]; then
+            continue
+        fi
+
+        _result "${MEM_ID} - ${VAR}"
+
+        NUM=$(cat ${RSVLOG} | grep -n "| ${SMS_ID}" | cut -d':' -f1)
+        if [ "${NUM}" == "" ]; then
+            continue
+        fi
+
+        # TODO replace RSVLOG
+        sed "${NUM}s/.*/replacement-line/" ${RSVLOG}
     done < ${PAYLOG}
 }
 
@@ -283,25 +312,27 @@ make_sum() {
 }
 
 git_push() {
-    if [ ! -z ${GITHUB_TOKEN} ]; then
-        DATE=$(date +%Y%m%d-%H%M)
+    if [ -z ${GITHUB_TOKEN} ]; then
+        return
+    fi
 
-        git config --global user.name "bot"
-        git config --global user.email "bot@nalbam.com"
+    DATE=$(date +%Y%m%d-%H%M)
 
-        git add --all
-        git commit -m "${DATE}" > /dev/null 2>&1 || export CHANGED=true
+    git config --global user.name "${GIT_USERNAME}"
+    git config --global user.email "${GIT_USEREMAIL}"
 
-        if [ -z ${CHANGED} ]; then
-            _command "git push github.com/${USERNAME}/${REPONAME}"
-            git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+    git add --all
+    git commit -m "${DATE}" > /dev/null 2>&1 || export CHANGED=true
 
-            if [ ! -z ${SLACK_TOKEN} ]; then
-                VERSION="$(cat ${SHELL_DIR}/target/VERSION | xargs)"
-                ${SHELL_DIR}/slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
-                    --emoji=":construction_worker:" --username="awskrug" \
-                    --title="meetup updated" "\`${VERSION}\`"
-            fi
+    if [ -z ${CHANGED} ]; then
+        _command "git push github.com/${USERNAME}/${REPONAME}"
+        git push -q https://${GITHUB_TOKEN}@github.com/${USERNAME}/${REPONAME}.git master
+
+        if [ ! -z ${SLACK_TOKEN} ]; then
+            VERSION="$(cat ${SHELL_DIR}/target/VERSION | xargs)"
+            ${SHELL_DIR}/slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
+                --emoji=":construction_worker:" --username="${MEETUP_ID}" \
+                --title="meetup updated" "\`${VERSION}\`"
         fi
     fi
 }
@@ -316,6 +347,9 @@ make_readme
 
 # paid
 make_paid
+
+# check
+check_paid
 
 # rsvps
 make_rsvps
