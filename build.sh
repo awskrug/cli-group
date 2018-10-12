@@ -186,11 +186,13 @@ check_paid() {
             continue
         fi
 
-        # TODO replace RSVLOG
-        REPLACED="${MEM_ID} | ${VAR:2}"
+        # replace RSVLOG
+        REPLACED="${MEM_ID} | ${VAR:4}"
+        REPLACED="$(echo "${REPLACED}" | sed 's/\//\\\//')"
+
         _result "${REPLACED}"
 
-        sed "${NUM}s/.*/${REPLACED}/" ${PAYLOG}
+        sed -i "${NUM}s/.*/${REPLACED}/" ${PAYLOG}
     done < ${PAYLOG}
 }
 
