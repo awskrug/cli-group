@@ -4,8 +4,8 @@ OS_NAME="$(uname | awk '{print tolower($0)}')"
 
 SHELL_DIR=$(dirname $0)
 
-USERNAME=${1:-awskrug}
-REPONAME=${2:-cli-group}
+USERNAME=${CIRCLE_PROJECT_USERNAME:-awskrug}
+REPONAME=${CIRCLE_PROJECT_REPONAME:-cli-group}
 
 CHANGED=
 ANSWER=
@@ -23,15 +23,15 @@ mkdir -p ${SHELL_DIR}/target
 
 ################################################################################
 
-command -v tput > /dev/null || TPUT=false
+# command -v tput > /dev/null || TPUT=false
+TPUT=false
 
 _echo() {
-    echo -e "$1"
-    # if [ -z ${TPUT} ] && [ ! -z $2 ]; then
-    #     echo -e "$(tput setaf $2)$1$(tput sgr0)"
-    # else
-    #     echo -e "$1"
-    # fi
+    if [ -z ${TPUT} ] && [ ! -z $2 ]; then
+        echo -e "$(tput setaf $2)$1$(tput sgr0)"
+    else
+        echo -e "$1"
+    fi
 }
 
 _result() {
@@ -135,6 +135,8 @@ make_paid() {
             MEM_ID="$(cat ${RSVLOG} | grep ${ARR[8]} | head -1 | cut -d' ' -f1 | xargs)"
             if [ "${MEM_ID}" == "" ]; then
                 MEM_ID="0"
+            else
+                _result "${MEM_ID} - ${ARR[4]} ${ARR[5]} - ${ARR[8]}"
             fi
 
             echo "${MEM_ID} | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]} | ${SMS_ID}" >> ${PAYLOG}
@@ -144,6 +146,20 @@ make_paid() {
         JSON="{\"checked\":true,\"phone_number\":\"${PHONE}\"}"
         curl -H 'Content-Type: application/json' -X PUT ${SMS_API_URL}/${SMS_ID} -d "${JSON}"
     done < ${PAID}
+
+    while read VAR; do
+        MEM_ID="$(echo ${VAR} | cut -d'|' -f1 | xargs)"
+
+        if [ "x${MEM_ID}" == "x0" ]; then
+            MEM_NM="$(echo ${VAR} | cut -d'|' -f4 | xargs)"
+            MEM_ID="$(cat ${RSVLOG} | grep ${MEM_NM} | head -1 | cut -d' ' -f1 | xargs)"
+
+            if [ "${MEM_ID}" != "" ]; then
+                # TODO replace
+                _result "${MEM_ID} - ${VAR}"
+            fi
+        fi
+    done < ${PAYLOG}
 }
 
 make_rsvps() {
