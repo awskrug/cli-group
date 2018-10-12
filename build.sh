@@ -182,14 +182,13 @@ check_paid() {
         _result "${MEM_ID} - ${VAR}"
 
         NUM=$(cat ${PAYLOG} | grep -n "| ${SMS_ID}" | cut -d':' -f1)
-        _result "${MEM_ID} - ${NUM}"
-
         if [ "${NUM}" == "" ]; then
             continue
         fi
 
         # TODO replace RSVLOG
         REPLACED="${MEM_ID} | ${VAR:2}"
+        _result "${REPLACED}"
 
         sed "${NUM}s/.*/${REPLACED}/" ${PAYLOG}
     done < ${PAYLOG}
