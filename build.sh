@@ -25,7 +25,7 @@ mkdir -p ${SHELL_DIR}/target
 
 ################################################################################
 
-# command -v tput > /dev/null || TPUT=true
+# command -v tput > /dev/null && TPUT=true
 TPUT=
 
 _echo() {
