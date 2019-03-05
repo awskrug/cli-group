@@ -222,8 +222,8 @@ make_rsvps() {
     RSV_CNT=$(cat ${RSVPS} | wc -l | xargs)
     PAY_CNT=$(cat ${PAYLOG} | wc -l | xargs)
 
-    _result "신청 : ${RSV_CNT}"
-    _result "지불 : ${PAY_CNT}"
+    _result "rsv : ${RSV_CNT}"
+    _result "pay : ${PAY_CNT}"
 
     # for slack
     printf "${PAY_CNT} / ${RSV_CNT}" > ${SHELL_DIR}/target/VERSION
@@ -231,8 +231,8 @@ make_rsvps() {
     # title
     echo "# ${EVENT_NAME}" > ${RSVLOG}
     echo "" >> ${RSVLOG}
-    echo "* 신청 : ${RSV_CNT}" >> ${RSVLOG}
-    echo "* 지불 : ${PAY_CNT}" >> ${RSVLOG}
+    echo "* rsv : ${RSV_CNT}" >> ${RSVLOG}
+    echo "* pay : ${PAY_CNT}" >> ${RSVLOG}
     echo "" >> ${RSVLOG}
 
     # table
@@ -272,9 +272,9 @@ make_balance() {
     COST=$(make_sum cost)
     LEFT=$(( ${PAID} - ${COST} ))
 
-    _result "지불 : ${PAID}"
-    _result "지출 : ${COST}"
-    _result "잔액 : ${LEFT}"
+    _result "paid : ${PAID}"
+    _result "cost : ${COST}"
+    _result "left : ${LEFT}"
 
     echo "" >> ${BALANCE}
     echo "## summary" >> ${BALANCE}
@@ -282,9 +282,9 @@ make_balance() {
 
     echo "Type | Amount" >> ${BALANCE}
     echo "---- | ------" >> ${BALANCE}
-    echo "지불 | ${PAID}" >> ${BALANCE}
-    echo "지출 | ${COST}" >> ${BALANCE}
-    echo "잔액 | ${LEFT}" >> ${BALANCE}
+    echo "paid | ${PAID}" >> ${BALANCE}
+    echo "cost | ${COST}" >> ${BALANCE}
+    echo "left | ${LEFT}" >> ${BALANCE}
 }
 
 make_sum() {
