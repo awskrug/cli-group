@@ -67,7 +67,8 @@ check_events() {
     EVENT_DATE=$(cat ${EVENTS} | grep '"local_date"' | cut -d'"' -f4 | xargs)
 
     if [ -z ${EVENT_ID} ]; then
-        _success "Not found event."
+        _result "Not found event."
+        return
     fi
 
     _result "${EVENT_NAME}"
@@ -75,6 +76,10 @@ check_events() {
 }
 
 make_readme() {
+    if [ -z ${EVENT_ID} ]; then
+        return
+    fi
+
     README=${SHELL_DIR}/README.md
 
     COUNT=$(cat ${README} | grep "\-\- meetup ${MEETUP_ID} \-\- ${EVENT_ID} \-\-" | wc -l | xargs)
@@ -105,6 +110,9 @@ make_readme() {
 }
 
 make_paid() {
+    if [ -z ${EVENT_ID} ]; then
+        return
+    fi
     if [ -z ${SMS_API_URL} ]; then
         return
     fi
@@ -154,6 +162,10 @@ make_paid() {
 }
 
 check_paid() {
+    if [ -z ${EVENT_ID} ]; then
+        return
+    fi
+
     # output
     RSVLOG=${SHELL_DIR}/rsvps/${EVENT_DATE}.md
     PAYLOG=${SHELL_DIR}/paid/${EVENT_DATE}.log
@@ -197,6 +209,10 @@ check_paid() {
 }
 
 make_rsvps() {
+    if [ -z ${EVENT_ID} ]; then
+        return
+    fi
+
     RSVPS=$(mktemp /tmp/meetup-rsvps-XXXXXX)
 
     # meetup events rsvps
@@ -344,9 +360,6 @@ git_push() {
 
 ################################################################################
 
-# balance 1
-make_balance
-
 # events
 check_events
 
@@ -362,7 +375,7 @@ check_paid
 # rsvps
 make_rsvps
 
-# balance 2
+# balance
 make_balance
 
 # git push
