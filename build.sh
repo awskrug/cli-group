@@ -344,6 +344,9 @@ git_push() {
 
 ################################################################################
 
+# balance 1
+make_balance
+
 # events
 check_events
 
@@ -359,7 +362,7 @@ check_paid
 # rsvps
 make_rsvps
 
-# balance
+# balance 2
 make_balance
 
 # git push
