@@ -11,6 +11,11 @@ AWSKRUG CLI Small Group
 
 ## [제4회 AWSKRUG CLI모임 (3월 5일 화요일)](https://www.meetup.com/awskrug/events/258924178/)
 
+* 유정열님
+  * [AWS CLI v2 알아보기](https://drive.google.com/open?id=1sYotwdfn2x0qcy5zIWXuiUN68Ld7-MxK)
+* 윤평호님
+  * DynamoDB 를 SQL로!
+
 <!-- meetup awskrug -- 255081286 -->
 
 ## [제3회 AWSKRUG CLI모임 (10월 16일 화요일)](https://www.meetup.com/awskrug/events/255081286/)
