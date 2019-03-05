@@ -296,11 +296,11 @@ make_balance() {
     echo "## summary" >> ${BALANCE}
     echo "" >> ${BALANCE}
 
-    echo "Type | Amount" >> ${BALANCE}
-    echo "---- | ------" >> ${BALANCE}
-    echo "paid | ${PAID}" >> ${BALANCE}
-    echo "cost | ${COST}" >> ${BALANCE}
-    echo "left | ${LEFT}" >> ${BALANCE}
+    echo "| Type | Amount |" >> ${BALANCE}
+    echo "| ---- | -----: |" >> ${BALANCE}
+    echo "| paid | ${PAID} |" >> ${BALANCE}
+    echo "| cost | ${COST} |" >> ${BALANCE}
+    echo "| left | ${LEFT} |" >> ${BALANCE}
 }
 
 make_sum() {
@@ -317,8 +317,8 @@ make_sum() {
     echo "## ${NAME}" >> ${BALANCE}
     echo "" >> ${BALANCE}
 
-    echo "Date | Amount" >> ${BALANCE}
-    echo "---- | ------" >> ${BALANCE}
+    echo "| Date | Amount |" >> ${BALANCE}
+    echo "| ---- | -----: |" >> ${BALANCE}
 
     while read VAR; do
         cat ${SHELL_DIR}/${NAME}/${VAR} | awk '{print $3}' > ${TEMP}
@@ -326,7 +326,7 @@ make_sum() {
 
         TOTAL=$(( ${TOTAL} + ${SUM} ))
 
-        echo "$(echo ${VAR} | cut -d'.' -f1) | ${SUM}" >> ${BALANCE}
+        echo "| $(echo ${VAR} | cut -d'.' -f1) | ${SUM} |" >> ${BALANCE}
     done < ${LIST}
 
     echo ${TOTAL}
