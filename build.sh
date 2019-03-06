@@ -380,6 +380,3 @@ make_balance
 
 # git push
 git_push
-
-# done
-_success "done."
