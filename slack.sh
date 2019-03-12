@@ -156,7 +156,8 @@ json="{"
         if [ "${footer_icon}" != "" ]; then
             json="$json\"footer_icon\":\"${footer_icon}\","
         fi
-        json="$json\"text\":\"${message}\""
+        json="$json\"text\":\"${message}\","
+        json="$json\"mrkdwn_in\":[\"text\"]"
     json="$json}]"
 json="$json}"
 
