@@ -14,7 +14,7 @@ AWSKRUG CLI Small Group
 * 유정열님
   * [AWS CLI v2 알아보기](https://drive.google.com/open?id=1sYotwdfn2x0qcy5zIWXuiUN68Ld7-MxK)
 * 윤평호님
-  * DynamoDB 를 SQL로!
+  * [SQL 쿼리를 AWS DynamoDB에서 (CLI)로 사용해 볼까요?](https://www.slideshare.net/IanYoon/sql-aws-dynamodb-cli)
 
 <!-- meetup awskrug -- 255081286 -->
 
