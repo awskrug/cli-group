@@ -351,7 +351,9 @@ git_push() {
 
         if [ ! -z ${SLACK_TOKEN} ]; then
             VERSION="$(cat ${SHELL_DIR}/target/VERSION | xargs)"
-            ${SHELL_DIR}/slack.sh --token="${SLACK_TOKEN}" --channel="cli-group" \
+
+            curl -sL opspresso.com/tools/slack | bash -s -- \
+                --token="${SLACK_TOKEN}" --channel="cli-group" \
                 --emoji=":construction_worker:" --username="${MEETUP_ID}" \
                 --title="meetup updated" "\`${VERSION}\`"
         fi
