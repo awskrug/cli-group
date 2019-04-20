@@ -4,8 +4,12 @@ AWSKRUG CLI Small Group
 
 > CLI란 command-line interface의 약자로, CLI모임에서는 CLI를 활용하여 운영자동화 등의 정보를 나누는 모임입니다.
 
-<!-- meetup count -- 4 -->
+<!-- meetup count -- 5 -->
 <!-- history -->
+
+<!-- meetup awskrug -- 260780778 -->
+
+## [제5회 AWSKRUG CLI모임 (5월 7일 화요일)](https://www.meetup.com/awskrug/events/260780778/)
 
 <!-- meetup awskrug -- 258924178 -->
 
