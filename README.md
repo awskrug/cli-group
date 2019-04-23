@@ -11,6 +11,11 @@ AWSKRUG CLI Small Group
 
 ## [제5회 AWSKRUG CLI모임 (5월 7일 화요일)](https://www.meetup.com/awskrug/events/260780778/)
 
+* @jongwony 님
+  * 나만의 CLI 만들기
+* @giseong.eom 님
+  * AWS Tools for PowerShell Core 맛보기
+
 <!-- meetup awskrug -- 258924178 -->
 
 ## [제4회 AWSKRUG CLI모임 (3월 5일 화요일)](https://www.meetup.com/awskrug/events/258924178/)
