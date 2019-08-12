@@ -11,6 +11,11 @@ AWSKRUG CLI Small Group
 
 ## [제6회 AWSKRUG CLI모임 (9월 3일)](https://www.meetup.com/awskrug/events/263931822/)
 
+* 한승호님 (에멘탈)
+  * CLI를 활용한 ECS Fargate 배포 전략
+* 엄기성님 (크래프톤)
+  * AWS Tools for PowerShell Core 맛보기
+
 <!-- meetup awskrug -- 260780778 -->
 
 ## [제5회 AWSKRUG CLI모임 (5월 7일 화요일)](https://www.meetup.com/awskrug/events/260780778/)
