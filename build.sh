@@ -369,7 +369,7 @@ check_events
 make_readme
 
 # paid
-make_paid
+# make_paid
 
 # check
 check_paid
