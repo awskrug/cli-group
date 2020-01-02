@@ -9,4 +9,4 @@ minApprovals:
 maxRequestedChanges:
   NONE: 0
 blockingLabels:
-- blocked
+  - blocked
