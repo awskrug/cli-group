@@ -13,6 +13,9 @@ AWSKRUG CLI Small Group
 
 <!-- meetup awskrug -- 263931822 -->
 
+* 최종원님 (원티드랩)
+  * CLI 스크립트로 외부 API 붙여보기
+
 ## [제6회 AWSKRUG CLI모임 (9월 3일)](https://www.meetup.com/awskrug/events/263931822/)
 
 * 한승호님 (에멘탈)
