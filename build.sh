@@ -157,7 +157,7 @@ make_paid() {
             # send to slack
             curl -sL opspresso.com/tools/slack | bash -s -- \
                 --token="${SLACK_TOKEN}" --channel="cli-group" \
-                --emoji=":construction_worker:" --username="${MEETUP_ID}" \
+                --emoji=":money_with_wings:" --username="${MEETUP_ID}" \
                 --title="${ARR[6]} ${ARR[8]}" "${ARR[4]} ${ARR[5]}"
         fi
 
