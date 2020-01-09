@@ -153,6 +153,12 @@ make_paid() {
             fi
 
             echo "${MEM_ID} | 5000 | ${ARR[4]} ${ARR[5]} | ${ARR[8]} | ${SMS_ID}" >> ${PAYLOG}
+
+            # send to slack
+            curl -sL opspresso.com/tools/slack | bash -s -- \
+                --token="${SLACK_TOKEN}" --channel="cli-group" \
+                --emoji=":money_with_wings:" --username="${MEETUP_ID}" \
+                --title="${ARR[6]} ${ARR[8]}" "${ARR[4]} ${ARR[5]}"
         fi
 
         # put checked=true
